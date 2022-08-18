@@ -1,4 +1,4 @@
-# Three.js Journey
+# Art Gallery
 
 ## Setup
 Download [Node.js](https://nodejs.org/en/download/).
