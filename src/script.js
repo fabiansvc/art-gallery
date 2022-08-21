@@ -12,7 +12,7 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 // Debug
 const debugObject = {}
 const gui = new dat.GUI({
-    width: 400
+    width: 256
 })
 gui.open( gui._closed ); 
 
@@ -125,7 +125,7 @@ window.addEventListener('resize', () =>
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 100)
-camera.position.set(0, 3, 9)
+camera.position.set(6, 4, 6)
 scene.add(camera)
 
 gui.add(camera.position, 'x' ).min(0).max(16).step(1).name("cameraX");
