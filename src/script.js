@@ -105,13 +105,13 @@ gltfLoader.load(
         const bakedMesh = gltf.scene.children.find((child) => child.name === 'baked')
         bakedMesh.material = bakedMaterial
 
-        for (let index = 1; index < vImages.length; index++) {
-            const vMesh = gltf.scene.children.find((child) => child.name === `v${index}`)
+        for (let index = 0; index < vImages.length; index++) {
+            const vMesh = gltf.scene.children.find((child) => child.name === `v${index + 1}`)
             vMesh.material = vImages[index]
         }
 
-        for (let index = 1; index < hImages.length; index++) {
-            const hMesh = gltf.scene.children.find((child) => child.name === `h${index}`)
+        for (let index = 0; index < hImages.length; index++) {
+            const hMesh = gltf.scene.children.find((child) => child.name === `h${index + 1}`)
             hMesh.material = hImages[index]
         }
 
@@ -251,7 +251,7 @@ const tick = () => {
     // Update physics
     world.step(1 / 60, deltaTime, 3)
 
-    cannonDebugger.update()
+    //cannonDebugger.update()
 
     // Update controls
     controls.update()
