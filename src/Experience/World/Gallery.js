@@ -13,7 +13,7 @@ export default class Gallery {
 
         // Debug
         if (this.debug.active) {
-            this.debugFolder = this.debug.ui.addFolder('gallery')
+            //this.debugFolder = this.debug.ui.addFolder('gallery')
         }
 
         // Resource
