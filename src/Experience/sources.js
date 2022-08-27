@@ -5,6 +5,11 @@ export default [
         path: 'models/Gallery/Gallery.glb'
     },
     {
+        name: 'characterModel',
+        type: 'gltfModel',
+        path: 'models/Soldier/Soldier.glb'
+    },
+    {
         name: 'bakedTexture',
         type: 'texture',
         path: 'textures/baked/baked.jpg'
