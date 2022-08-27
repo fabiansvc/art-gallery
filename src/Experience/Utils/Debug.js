@@ -9,6 +9,7 @@ export default class Debug
         if(this.active)
         {
             this.ui = new dat.GUI()
+            this.ui.open(this.ui._closed)
         }
     }
 }
