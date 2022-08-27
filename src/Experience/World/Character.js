@@ -23,7 +23,7 @@ export default class Character {
 
     setModel() {
         this.model = this.resource.scene
-        this.model.position.set(0, 0, 4)
+        this.model.position.set(0, 0.1, 4)
         this.model.rotation.y = Math.PI * 1
         this.scene.add(this.model)
 
