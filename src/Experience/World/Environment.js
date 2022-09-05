@@ -14,19 +14,20 @@ export default class Environment
         {
             //this.debugFolder = this.debug.ui.addFolder('environment')
         }
-
+        this.ambientLight = new THREE.AmbientLight('#ffffff')
+        this.scene.add(this.ambientLight)
         this.setSunLight()
     }
 
     setSunLight()
     {
-        this.sunLight = new THREE.AmbientLight('#ffffff')
-        // this.sunLight = new THREE.DirectionalLight('#ffffff', 4)
-        // this.sunLight.castShadow = true
-        // this.sunLight.shadow.camera.far = 15
-        // this.sunLight.shadow.mapSize.set(1024, 1024)
-        // this.sunLight.shadow.normalBias = 0.05
-        // this.sunLight.position.set(3.5, 2, - 1.25)
+        
+        this.sunLight = new THREE.DirectionalLight('#ffffff', 4)
+        this.sunLight.castShadow = true
+        this.sunLight.shadow.camera.far = 15
+        this.sunLight.shadow.mapSize.set(1024, 1024)
+        this.sunLight.shadow.normalBias = 0.05
+        this.sunLight.position.set(0, 2, 4)
         this.scene.add(this.sunLight)
 
         // // Debug

@@ -7,7 +7,7 @@ export default [
     {
         name: 'characterModel',
         type: 'gltfModel',
-        path: 'models/Soldier/Soldier.glb'
+        path: 'models/Xbot/Xbot.glb'
     },
     {
         name: 'bakedTexture',

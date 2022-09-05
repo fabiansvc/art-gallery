@@ -8,6 +8,7 @@ import World from './World/World.js'
 import Resources from './Utils/Resources.js'
 import sources from './sources.js'
 import Pyshics from './Pyshics.js'
+import KeyControl from './Utils/keyControl.js'
 
 let instance = null
 
@@ -38,7 +39,7 @@ export default class Experience
         this.renderer = new Renderer()
         this.world = new World()
         this.pyshics = new Pyshics()
-        
+        this.keyControl = new KeyControl()
 
         // Resize event
         this.sizes.on('resize', () =>
@@ -51,6 +52,7 @@ export default class Experience
         {
             this.update()
         })
+
     }
 
     resize()
