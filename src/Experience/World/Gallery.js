@@ -75,6 +75,7 @@ export default class Gallery {
         this.scene.add(this.model)
 
         this.bakedMesh = this.model.children.find((child) => child.name === 'baked')
+        this.bakedMesh.receiveShadow = true
         this.bakedMesh.material = this.bakedMaterial
 
         for (let index = 1; index < 9; index++) {
