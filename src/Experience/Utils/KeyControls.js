@@ -1,7 +1,7 @@
 import EventEmitter from './EventEmitter.js'
 
 
-export default class KeyControl extends EventEmitter {
+export default class KeyControls extends EventEmitter {
     constructor() {
         super()
         this.DIRECTIONS = ["w", "a", "s", "d"]
