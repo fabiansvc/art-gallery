@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import Experience from '../Experience.js'
+import * as CANNON from 'cannon-es'
 
 export default class Character {
     constructor() {
@@ -16,32 +17,42 @@ export default class Character {
         this.rotateAngle = new THREE.Vector3(0, 1, 0)
         this.rotateQuarternion = new THREE.Quaternion()
         this.cameraTarget = new THREE.Vector3()
-
+        this.collide = false
         // constants
-
         this.runVelocity = 0.004
         this.walkVelocity = 0.002
 
         // Resource
         this.resource = this.resources.items.characterModel
         this.setModel()
+        this.setAvatarPyshics()
 
         // Animation
         this.setAnimation()
-
     }
 
     setModel() {
         this.model = this.resource.scene
-        console.log(this.resource);
-        this.model.position.set(0, 0.1, 4)
+        console.log(this.model);
+        this.model.position.set(0, 3, 4)
         this.scene.add(this.model)
 
         this.model.traverse((child) => {
-            if (child instanceof THREE.Mesh) {
-                child.castShadow = true
-            }
+            // if (child instanceof THREE.Mesh) {
+            //     child.castShadow = true
+            // }
         })
+    }
+
+    setAvatarPyshics() {
+        this.avatarShape = new CANNON.Box(new CANNON.Vec3(0.3, 0.9, 0.6))
+
+        this.avatarBody = new CANNON.Body({
+            mass: 75
+        })
+        this.avatarBody.addShape(this.avatarShape)
+        this.avatarBody.position.copy(this.model.position)
+        this.physics.world.addBody(this.avatarBody)
     }
 
     setAnimation() {
@@ -51,13 +62,12 @@ export default class Character {
         this.animation.mixer = new THREE.AnimationMixer(this.model)
 
         // Actions
-
         this.animation.actions = {}
 
         this.animation.actions.idle = this.animation.mixer.clipAction(this.resource.animations[2])
         this.animation.actions.running = this.animation.mixer.clipAction(this.resource.animations[3])
         this.animation.actions.walking = this.animation.mixer.clipAction(this.resource.animations[6])
-        
+
         this.animation.actions.current = this.animation.actions.idle
         this.animation.actions.current.play()
 
@@ -73,10 +83,12 @@ export default class Character {
 
             this.animation.actions.current = newAction
         }
+        
     }
 
     changeAnimation() {
         this.directionPressed = this.keyControl.DIRECTIONS.some((key) => this.keyControl.keysPressed[key] == true)
+
         if (this.directionPressed && this.keyControl.toggleRun & this.animation.actions.current != this.animation.actions.running) {
             this.animation.play('running')
         } else if (this.directionPressed && !this.keyControl.toggleRun & this.animation.actions.current != this.animation.actions.walking) {
@@ -84,12 +96,17 @@ export default class Character {
         } else if (!this.directionPressed & this.animation.actions.current != this.animation.actions.idle) {
             this.animation.play('idle')
         }
+        this.animation.mixer.update(this.time.delta * 0.001)
 
-        if (this.animation.actions.current == this.animation.actions.running || this.animation.actions.current == this.animation.actions.walking) {
+        this.setMovement()
+    }
+
+    setMovement(){
+        if (this.animation.actions.current == this.animation.actions.running
+            || this.animation.actions.current == this.animation.actions.walking) {
             let angleYCameraDirection = Math.atan2(
                 (this.camera.instance.position.x - this.model.position.x),
                 (this.camera.instance.position.z - this.model.position.z))
-
 
             // diagonal movement angle offset
             let directionOffset = this.directionOffset()
@@ -107,28 +124,31 @@ export default class Character {
             // run/walk velocity
             const velocity = this.animation.actions.current == this.animation.actions.running ? this.runVelocity : this.walkVelocity
 
-            // move model & camera
+            // move model, pyshycs body & camera
             const moveX = this.walkDirection.x * velocity * this.time.delta
             const moveZ = this.walkDirection.z * velocity * this.time.delta
             this.model.position.x += moveX
             this.model.position.z += moveZ
+            this.avatarBody.position.x = this.model.position.x
+            this.avatarBody.position.z = this.model.position.z
+            this.avatarBody.quaternion.copy(this.model.quaternion)
             this.updateCameraTarget(moveX, moveZ)
         }
     }
+
     updateCameraTarget(moveX, moveZ) {
         // move camera
-        this.camera.instance.position.x += moveX 
-        this.camera.instance.position.z += moveZ 
+        this.camera.instance.position.x += moveX
+        this.camera.instance.position.z += moveZ
         // update camera target
         this.cameraTarget.x = this.model.position.x
-        this.cameraTarget.y = this.model.position.y 
+        this.cameraTarget.y = this.model.position.y
         this.cameraTarget.z = this.model.position.z
         this.camera.controls.target = this.cameraTarget
     }
 
-    directionOffset() {
+    directionOffset() {        
         let directionOffset = 0 // w
-
         if (this.keyControl.keysPressed.w) {
             if (this.keyControl.keysPressed.a) {
                 directionOffset = Math.PI / 4 // w+a
@@ -152,9 +172,22 @@ export default class Character {
         return directionOffset
     }
 
-    update() {
-        this.changeAnimation()
+    setModelPosition(){
+        this.model.position.x = this.avatarBody.position.x
+        this.model.position.y = this.avatarBody.position.y / 10
+        this.model.position.z = this.avatarBody.position.z
         this.camera.instance.lookAt(new THREE.Vector3(this.model.position.x, this.model.position.y + 1.5, this.model.position.z))
-        this.animation.mixer.update(this.time.delta * 0.001)
     }
+
+    update() {
+        this.setModelPosition()     
+        this.avatarBody.addEventListener('collide', () => {
+            this.setModelPosition() 
+        }, this.changeAnimation() )
+    }
+
 }
+
+
+
+

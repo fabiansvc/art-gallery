@@ -38,8 +38,8 @@ export default class Experience
         this.camera = new Camera()
         this.renderer = new Renderer()
         this.world = new World()
-        this.pyshics = new Pyshics()
         this.keyControl = new KeyControls()
+        this.pyshics = new Pyshics()
 
         // Resize event
         this.sizes.on('resize', () =>

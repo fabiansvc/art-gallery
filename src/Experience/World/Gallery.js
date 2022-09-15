@@ -24,10 +24,9 @@ export default class Gallery {
         this.setHorizontalImages()
         this.setMaterial()
         this.setModel()
-        this.setExternalRoomPyshics()
-        this.setInternalRoomPyshics()
-        this.setCenterWallShape()
-
+        this.setWallsPhysics()
+        this.setFloorPhysics()
+        this.setCenterWallPhysics()
     }
 
     setTextures() {
@@ -88,45 +87,63 @@ export default class Gallery {
 
     }
 
-    setExternalRoomPyshics() {
-        this.floorShape = new CANNON.Box(new CANNON.Vec3(
+    setWallsPhysics() {
+        this.wallShape = new CANNON.Box(new CANNON.Vec3(
             (this.bakedMesh.geometry.boundingBox.max.x - this.bakedMesh.geometry.boundingBox.min.x) * 0.5,
             (this.bakedMesh.geometry.boundingBox.max.y - this.bakedMesh.geometry.boundingBox.min.y) * 0.5,
-            (this.bakedMesh.geometry.boundingBox.max.z - this.bakedMesh.geometry.boundingBox.min.z) * 0.5))
+            this.bakedMesh.geometry.boundingBox.max.z / 16
+        ))
 
-        this.floorBody = new CANNON.Body({ material: new CANNON.Material('default') })
-        this.floorBody.mass = 0
-        this.floorBody.position.copy(new CANNON.Vec3(this.bakedMesh.position.x, this.bakedMesh.position.y + 2, this.bakedMesh.position.z))
-        this.floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(0, -1, 0), Math.PI * 0.5)
-        this.floorBody.addShape(this.floorShape)
-        this.physics.world.addBody(this.floorBody)
+        this.wallBody1 = new CANNON.Body({ mass: 0 })
+        this.wallBody1.addShape(this.wallShape)
+        this.wallBody1.position.copy(new CANNON.Vec3(this.bakedMesh.position.x + 7.5, this.bakedMesh.position.y + 2, this.bakedMesh.position.z))
+        this.wallBody1.quaternion.setFromEuler(0, Math.PI * 0.5, 0)
+
+        this.wallBody2 = new CANNON.Body({ mass: 0 })
+        this.wallBody2.addShape(this.wallShape)
+        this.wallBody2.position.copy(new CANNON.Vec3(this.bakedMesh.position.x - 7.5, this.bakedMesh.position.y + 2, this.bakedMesh.position.z))
+        this.wallBody2.quaternion.setFromEuler(0, Math.PI * 0.5, 0)
+
+        this.wallBody3 = new CANNON.Body({ mass: 0 })
+        this.wallBody3.addShape(this.wallShape)
+        this.wallBody3.position.copy(new CANNON.Vec3(this.bakedMesh.position.x, this.bakedMesh.position.y + 2, this.bakedMesh.position.z - 7.5))
+        this.wallBody3.quaternion.setFromEuler(0, 0, 0)
+
+        this.wallBody4 = new CANNON.Body({ mass: 0 })
+        this.wallBody4.addShape(this.wallShape)
+        this.wallBody4.position.copy(new CANNON.Vec3(this.bakedMesh.position.x, this.bakedMesh.position.y + 2, this.bakedMesh.position.z + 7.5))
+        this.wallBody4.quaternion.setFromEuler(0, 0, 0)
+
+        this.physics.world.addBody(this.wallBody1)
+        this.physics.world.addBody(this.wallBody2)
+        this.physics.world.addBody(this.wallBody3)
+        this.physics.world.addBody(this.wallBody4)
     }
 
-    setInternalRoomPyshics() {
-        this.floorShape = new CANNON.Box(new CANNON.Vec3(
-            (this.bakedMesh.geometry.boundingBox.max.x - this.bakedMesh.geometry.boundingBox.min.x) * 0.45,
-            (this.bakedMesh.geometry.boundingBox.max.y - this.bakedMesh.geometry.boundingBox.min.y) * 0.5,
-            (this.bakedMesh.geometry.boundingBox.max.z - this.bakedMesh.geometry.boundingBox.min.z) * 0.45))
-
-        this.floorBody = new CANNON.Body({ material: new CANNON.Material('default') })
-        this.floorBody.mass = 0
-        this.floorBody.position.copy(new CANNON.Vec3(this.bakedMesh.position.x, this.bakedMesh.position.y + 2, this.bakedMesh.position.z))
-        this.floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(0, -1, 0), Math.PI * 0.5)
-        this.floorBody.addShape(this.floorShape)
-        this.physics.world.addBody(this.floorBody)
-    }
-
-    setCenterWallShape() {
+    setCenterWallPhysics() {
         this.centerWallShape = new CANNON.Box(new CANNON.Vec3(
             (this.bakedMesh.geometry.boundingBox.max.x - this.bakedMesh.geometry.boundingBox.min.x) * 0.15,
             (this.bakedMesh.geometry.boundingBox.max.y - this.bakedMesh.geometry.boundingBox.min.y) * 0.5,
             (this.bakedMesh.geometry.boundingBox.max.z - this.bakedMesh.geometry.boundingBox.min.z) * 0.15))
 
-        this.centerWallBody = new CANNON.Body({ material: new CANNON.Material('default') })
-        this.centerWallBody.mass = 0
-        this.centerWallBody.position.copy(new CANNON.Vec3(this.bakedMesh.position.x, this.bakedMesh.position.y + 2, this.bakedMesh.position.z))
+        this.centerWallBody = new CANNON.Body({ mass: 0 })
         this.centerWallBody.addShape(this.centerWallShape)
+        this.centerWallBody.position.copy(new CANNON.Vec3(this.bakedMesh.position.x, this.bakedMesh.position.y + 2, this.bakedMesh.position.z))
         this.physics.world.addBody(this.centerWallBody)
     }
 
+    setFloorPhysics() {
+        this.floorShape = new CANNON.Box(new CANNON.Vec3(
+            (this.bakedMesh.geometry.boundingBox.max.x - this.bakedMesh.geometry.boundingBox.min.x) * 0.45,
+            0.1,
+            (this.bakedMesh.geometry.boundingBox.max.z - this.bakedMesh.geometry.boundingBox.min.z) * 0.45))
+
+        this.floorBody = new CANNON.Body({
+            mass: 0
+        })
+        this.floorBody.addShape(this.floorShape)
+        this.floorBody.position.copy(new CANNON.Vec3(this.bakedMesh.position.x, this.bakedMesh.position.y, this.bakedMesh.position.z))
+        this.floorBody.quaternion.setFromEuler(0, -Math.PI * 0.5, 0)
+        this.physics.world.addBody(this.floorBody)
+    }
 }
