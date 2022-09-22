@@ -34,12 +34,13 @@ export default class Experience
         this.sizes = new Sizes()
         this.time = new Time()
         this.scene = new THREE.Scene()
+        this.pyshics = new Pyshics()
         this.resources = new Resources(sources)
         this.camera = new Camera()
         this.renderer = new Renderer()
         this.world = new World()
         this.keyControl = new KeyControls()
-        this.pyshics = new Pyshics()
+        
 
         // Resize event
         this.sizes.on('resize', () =>

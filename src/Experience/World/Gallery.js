@@ -72,6 +72,7 @@ export default class Gallery {
     setModel() {
         this.model = this.resource.scene
         this.scene.add(this.model)
+        
 
         this.bakedMesh = this.model.children.find((child) => child.name === 'baked')
         this.bakedMesh.receiveShadow = true
