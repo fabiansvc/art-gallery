@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import Experience from '../Experience.js'
 import * as CANNON from 'cannon-es'
-import { Raycaster } from 'three'
+
 
 export default class Character {
     constructor() {
@@ -31,14 +31,11 @@ export default class Character {
 
         // Animation
         this.setAnimation()
-
-        // Raycaster
-        //this.setRayCaster()
     }
 
     setModel() {
         this.model = this.resource.scene
-        console.log(this.model);
+        //console.log(this.model);
         this.model.position.set(0, 3, 4)
         this.scene.add(this.model)
 
@@ -194,42 +191,6 @@ export default class Character {
         this.avatarBody.addEventListener('collide', () => {
             this.setModelPosition()
         }, this.changeAnimation())
-    }
-
-    setRayCaster() {
-        this.mouse = new THREE.Vector2();
-        this.raycaster = new Raycaster()
-
-        this.points = [
-            {   
-                element: document.querySelector('.point-0')
-            }
-        ]
-
-        window.addEventListener('mousemove', (event) => {
-            
-            this.mouse.x = event.clientX / this.experience.sizes.width * 2 - 1
-            this.mouse.y = - (event.clientY / this.experience.sizes.height) * 2 + 1
-
-            this.raycaster.setFromCamera(
-                this.mouse,
-                this.camera.instance
-            )
-            
-            let intersects = this.raycaster.intersectObject(this.experience.world.gallery.model.children.find((child) => child.name === 'v1'));
-                
-            if (intersects.length > 0) {
-                let positionX = 0
-                let positionY = intersects[0].object.geometry.boundingBox.max.y - 100
-                let positionZ = intersects[0].object.geometry.boundingBox.max.z + 200
-
-                console.log(positionX, positionY, positionZ);
-                this.points[0].element.classList.add('visible')
-                this.points[0].element.style.transform = `translateX(${this.mouse.y}px) translateY(${this.mouse.x}px) translateZ(${positionZ}px)`
-            }else{
-                this.points[0].element.classList.remove('visible')
-            }
-        });
     }
 
     update() {
