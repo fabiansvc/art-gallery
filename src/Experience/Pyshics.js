@@ -31,7 +31,7 @@ export default class Pyshics extends EventEmitter {
         // Update physics
         this.world.step(1 / 60, this.time.delta, 3)
 
-        this.cannonDebugger.update()
+        // this.cannonDebugger.update()
     }
 
 }

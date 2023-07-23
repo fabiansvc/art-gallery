@@ -9,8 +9,6 @@ import Resources from './Utils/Resources.js'
 import sources from './sources.js'
 import Pyshics from './Pyshics.js'
 import KeyControls from './Utils/KeyControls.js'
-import Raycaster from './Raycasting.js'
-import Raycasting from './Raycasting.js'
 
 let instance = null
 
@@ -42,7 +40,6 @@ export default class Experience
         this.renderer = new Renderer()
         this.world = new World()
         this.keyControl = new KeyControls()
-        this.setRaycaster = new Raycasting()
 
         // Resize event
         this.sizes.on('resize', () =>
